@@ -21,16 +21,12 @@ async function run() {
     await client.connect();
     const warehouseCollection = client
       .db("warehouse")
-      .collection("warehouseCollection");
-    app.get("/collection", async (req, res) => {
+      .collection("laptopCollection");
+    app.get("/laptopCollection", async (req, res) => {
       const query = {};
       const cursor = warehouseCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
-      //checking
-      app.get("/checking", async (req, res) => {
-        res.send("Checking,the server is connected or not");
-      });
     });
   } finally {
     //
