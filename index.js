@@ -27,6 +27,10 @@ async function run() {
       const cursor = warehouseCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
+      //checking
+      app.get("/checking", async (req, res) => {
+        res.send("Checking,the server is connected or not");
+      });
     });
   } finally {
     //
