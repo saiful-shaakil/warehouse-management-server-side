@@ -62,6 +62,12 @@ async function run() {
       const result = await laptopCollection.deleteOne(query);
       res.send(result);
     });
+    //to post a new item
+    app.post("/laptopCollection", async (req, res) => {
+      const newLaptop = req.body;
+      const result = await laptopCollection.insertOne(newLaptop);
+      res.send(result);
+    });
   } finally {
     //
   }
