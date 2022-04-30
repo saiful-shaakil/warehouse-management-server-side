@@ -31,11 +31,28 @@ async function run() {
     });
     // to get a single item
     app.get("/laptop/:id", async (req, res) => {
-      console.log(req.params.id);
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const laptop = await laptopCollection.findOne(query);
       res.send(laptop);
+    });
+    //to update the stock items
+    app.put("/laptop/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateStock = req.body;
+      const query = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          quantity: updateStock.quantity,
+        },
+      };
+      const result = await laptopCollection.updateOne(
+        query,
+        updateDoc,
+        options
+      );
+      res.send(result);
     });
   } finally {
     //
