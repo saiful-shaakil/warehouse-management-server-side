@@ -22,13 +22,23 @@ async function run() {
     const laptopCollection = client
       .db("warehouse")
       .collection("laptopCollection");
-    //to get all the collection
+    const brandCollection = client.db("warehouse").collection("brand");
+    //to get all the laptop collection
     app.get("/laptopCollection", async (req, res) => {
       const query = {};
       const cursor = laptopCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
     });
+
+    //to get all the brand collection
+    app.get("/brand", async (req, res) => {
+      const query = {};
+      const cursor = brandCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     // to get a single item
     app.get("/laptop/:id", async (req, res) => {
       const id = req.params.id;
