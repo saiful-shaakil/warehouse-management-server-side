@@ -45,6 +45,7 @@ async function run() {
       const updateDoc = {
         $set: {
           quantity: updateStock.quantity,
+          sold: updateStock.sold,
         },
       };
       const result = await laptopCollection.updateOne(
