@@ -78,6 +78,14 @@ async function run() {
       const result = await laptopCollection.insertOne(newLaptop);
       res.send(result);
     });
+    // to filter the items that a user added
+    app.get("/my-items", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const cursor = laptopCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
   } finally {
     //
   }
