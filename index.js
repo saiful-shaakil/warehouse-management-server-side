@@ -60,7 +60,7 @@ async function run() {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await laptopCollection.deleteOne(query);
-      res.send(res);
+      res.send(result);
     });
   } finally {
     //
