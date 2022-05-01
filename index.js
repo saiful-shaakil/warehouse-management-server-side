@@ -91,9 +91,9 @@ async function run() {
     app.post("/login", async (req, res) => {
       const user = req.body;
       const accessToken = jwt.sign(user, process.env.SECRET_TOKEN, {
-        expiresIn: "2d",
+        expiresIn: "1d",
       });
-      res.send({ accessToken });
+      res.send(accessToken);
     });
   } finally {
     //
@@ -105,5 +105,5 @@ app.get("/", async (req, res) => {
   res.send("Warehouse server site is running");
 });
 app.listen(port, () => {
-  console.log("running port of warehouse management website is ", port);
+  console.log("running port of warehouse is ", port);
 });
