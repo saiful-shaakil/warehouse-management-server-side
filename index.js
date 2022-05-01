@@ -11,6 +11,24 @@ require("dotenv").config();
 app.use(cors());
 app.use(express.json());
 
+// to verify the user
+function verifyToken(req, res, next) {
+  const authToken = req.headers.authorization;
+  if (!authToken) {
+    return res.status(401).send({ message: "unauthorized acceess" });
+  }
+  const token = authToken.split(" ")[1];
+  jwt.verify(token, process.env.SECRET_TOKEN, (err, decoded) => {
+    if (err) {
+      return res.status(403).send({ message: "Forbidden Access" });
+    }
+    console.log("decoded", decoded);
+    req.decoded = decoded;
+  });
+  console.log("inside verify", autho);
+  next();
+}
+
 const uri = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASS}@redonion.uipb9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -80,7 +98,7 @@ async function run() {
       res.send(result);
     });
     // to filter the items that a user added
-    app.get("/my-items", async (req, res) => {
+    app.get("/my-items", verifyToken, async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const cursor = laptopCollection.find(query);
