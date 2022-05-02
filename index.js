@@ -12,23 +12,23 @@ app.use(cors());
 app.use(express.json());
 
 // to verify the user
-function verifyToken(req, res, next) {
-  const authToken = req.headers.authorization;
-  if (!authToken) {
-    return res.status(401).send({ message: "unauthorized acceess" });
+function verifyUser(req, res, next) {
+  const authorization = req.headers.authorization;
+  if (!authorization) {
+    return res.status(401).send({ message: "Unauthorized Access" });
   }
-  const token = authToken.split(" ")[1];
-  jwt.verify(token, process.env.SECRET_TOKEN, (err, decoded) => {
-    if (err) {
-      return res.status(403).send({ message: "Forbidden Access" });
+  const userToken = authorization.split(" ")[1];
+  //verifying
+  jwt.verify(userToken, process.env.SECRET_TOKEN, (error, decoded) => {
+    if (error) {
+      return res.status(404).send({ message: "Access Forbidden" });
     }
-    console.log("decoded", decoded);
     req.decoded = decoded;
+    next();
   });
-  console.log("inside verify", autho);
-  next();
 }
 
+// access the database
 const uri = `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASS}@redonion.uipb9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -98,12 +98,17 @@ async function run() {
       res.send(result);
     });
     // to filter the items that a user added
-    app.get("/my-items", verifyToken, async (req, res) => {
+    app.get("/my-items", verifyUser, async (req, res) => {
+      const decodeEmail = req.decoded.email;
       const email = req.query.email;
-      const query = { email: email };
-      const cursor = laptopCollection.find(query);
-      const result = await cursor.toArray();
-      res.send(result);
+      if (email === decodeEmail) {
+        const query = { email: email };
+        const cursor = laptopCollection.find(query);
+        const result = await cursor.toArray();
+        res.send(result);
+      } else {
+        return res.status(403).send({ message: "Acess Forbidden" });
+      }
     });
     // using jwt to create token
     app.post("/login", async (req, res) => {
